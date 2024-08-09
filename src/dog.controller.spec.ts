@@ -104,10 +104,10 @@ describe('DogController', () => {
         breed: 'Golden Retriever',
       };
       jest.spyOn(dogService, 'deleteDog').mockImplementation(() => {
-        return deletedDog;
+        return deletedDog.id;
       });
 
-      expect(dogController.deleteDog(1)).toBe(deletedDog);
+      expect(dogController.deleteDog(1)).toBe(1);
     });
   });
 });

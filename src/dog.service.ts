@@ -1,44 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDogDto, Dog, UpdateDogDto } from './dog.model';
+import { DogRepository } from './dog.repository';
 
 @Injectable()
 export class DogService {
-  private dogs: Dog[] = [];
+  private dogRepository: DogRepository;
+
+  constructor(dogRepository: DogRepository) {
+    this.dogRepository = dogRepository;
+  }
 
   getAllDogs(): Dog[] {
-    return this.dogs;
+    return this.dogRepository.dogs;
   }
 
   getDogById(id: number): Dog {
-    return this.dogs.find((dog) => dog.id === id);
+    return this.dogRepository.dogs.find((dog) => dog.id === id);
   }
 
   createDog(dog: CreateDogDto): Dog {
     const d = {
-      id: this.dogs.length + 1,
+      id: this.dogRepository.dogs.length + 1,
       name: dog.name,
       age: dog.age,
       breed: dog.breed,
     };
-    this.dogs.push(d);
+    this.dogRepository.dogs.push(d);
     return d;
   }
 
   updateDog(id: number, updatedDog: UpdateDogDto): Dog {
-    const dogIndex = this.dogs.findIndex((dog) => dog.id === id);
+    const dogIndex = this.dogRepository.dogs.findIndex((dog) => dog.id === id);
     if (dogIndex !== -1) {
-      this.dogs[dogIndex] = { ...this.dogs[dogIndex], ...updatedDog };
-      return this.dogs[dogIndex];
+      this.dogRepository.dogs[dogIndex] = {
+        ...this.dogRepository.dogs[dogIndex],
+        ...updatedDog,
+      };
+      return this.dogRepository.dogs[dogIndex];
     }
     return null;
   }
 
-  deleteDog(id: number): Dog {
-    const dogIndex = this.dogs.findIndex((dog) => dog.id === id);
+  deleteDog(id: number): number {
+    const dogIndex = this.dogRepository.dogs.findIndex((dog) => dog.id === id);
     if (dogIndex !== -1) {
-      const deletedDog = this.dogs[dogIndex];
-      this.dogs.splice(dogIndex, 1);
-      return deletedDog;
+      const deletedDog = this.dogRepository.dogs[dogIndex];
+      this.dogRepository.dogs.splice(dogIndex, 1);
+      return deletedDog.id;
     }
     return null;
   }
