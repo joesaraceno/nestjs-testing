@@ -3,10 +3,7 @@ import { CreateDogDto, Dog, UpdateDogDto } from './dog.model';
 
 @Injectable()
 export class DogService {
-  private dogs: Dog[] = [
-    { name: 'fido', id: 1, age: 1, breed: 'pitbull' },
-    { name: 'cleo', id: 2, age: 17, breed: 'mutt' },
-  ];
+  private dogs: Dog[] = [];
 
   getAllDogs(): Dog[] {
     return this.dogs;
