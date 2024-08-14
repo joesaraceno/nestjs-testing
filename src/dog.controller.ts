@@ -7,10 +7,11 @@ import {
   Param,
   Body,
   ParseIntPipe,
-  NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DogService } from './dog.service';
 import { CreateDogDto, Dog, UpdateDogDto } from './dog.model';
+import { NotFoundInterceptor } from './injectables/NotFoundInterceptor';
 
 @Controller('dog')
 export class DogController {
@@ -22,13 +23,9 @@ export class DogController {
   }
 
   @Get(':id')
+  @UseInterceptors(new NotFoundInterceptor('No resource found for given id'))
   getDogById(@Param('id', ParseIntPipe) id: number): Dog {
-    const dog: Dog = this.dogService.getDogById(id);
-    if (!dog) {
-      throw new NotFoundException('Invalid dog');
-    }
-
-    return dog;
+    return this.dogService.getDogById(id);
   }
 
   @Post()
