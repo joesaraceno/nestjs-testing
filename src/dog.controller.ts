@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { DogService } from './dog.service';
 import { CreateDogDto, Dog, UpdateDogDto } from './dog.model';
@@ -21,8 +22,13 @@ export class DogController {
   }
 
   @Get(':id')
-  getDogById(@Param('id', ParseIntPipe) id: number) {
-    return this.dogService.getDogById(id);
+  getDogById(@Param('id', ParseIntPipe) id: number): Dog {
+    const dog: Dog = this.dogService.getDogById(id);
+    if (!dog) {
+      throw new NotFoundException('Invalid dog');
+    }
+
+    return dog;
   }
 
   @Post()
